@@ -1,0 +1,12 @@
+{
+  "app": {
+    "title": "AI LMS Student",
+    "headerColor": "#0f172a",
+    "textColor": "white",
+    "statusBar": "light-content",
+    "actionBarHidden": true
+  },
+  "pages": [
+    "pages/index"
+  ]
+}

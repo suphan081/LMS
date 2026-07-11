@@ -1,0 +1,6 @@
+{
+  "name": "AI LMS Demo",
+  "description": "Zalo Mini App and Web Dashboard prototype for validating an AI-powered Learning Management System.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
