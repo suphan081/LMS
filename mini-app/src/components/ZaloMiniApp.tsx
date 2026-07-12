@@ -357,7 +357,13 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
   const wrapperClass = "relative flex flex-col w-full h-full min-h-0 bg-slate-50 overflow-hidden select-none";
 
   return (
-    <div id="zalo-app-container" className={wrapperClass}>
+    <div 
+      id="zalo-app-container" 
+      className={wrapperClass}
+      style={{
+        paddingTop: isInRealZalo ? 'calc(56px + env(safe-area-inset-top, 0px))' : undefined
+      }}
+    >
 
       {/* 1. ZALO MINI APP HEADER */}
       {!isInRealZalo && (
@@ -416,7 +422,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
 
       {/* NEW: FIXED ACADEMY SWITCHER ROW */}
       {!activeQuiz && !selectedLesson && !selectedCourse && (
-        <div className={`px-4 py-3 bg-white border-b border-gray-100 flex items-center justify-between shrink-0 z-10 select-none ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
+        <div className="px-4 py-3 bg-white border-b border-gray-100 flex items-center justify-between shrink-0 z-10 select-none">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-800">HỌC VIỆN:</span>
           <div className="flex gap-2">
             {ORGANIZATIONS.map(org => {
@@ -451,7 +457,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
         
         {/* VIEW 1: ACTIVE QUIZ SCREEN */}
         {activeQuiz && (
-          <div id="quiz-view" className={`p-4 flex-1 flex flex-col bg-white ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
+          <div id="quiz-view" className="p-4 flex-1 flex flex-col bg-white">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
               <div>
                 <h3 className="font-bold text-gray-800 text-sm">Kiểm Tra Nhanh AI</h3>
@@ -632,7 +638,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
         {selectedLesson && !activeQuiz && (
           <div id="lesson-view" className="flex-1 flex flex-col bg-white">
             {/* Header */}
-            <div className={`p-3 border-b border-gray-100 flex items-center space-x-2 shrink-0 ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
+            <div className="p-3 border-b border-gray-100 flex items-center space-x-2 shrink-0">
               <button onClick={handleBackToCourseDetail} className="p-1 text-gray-500 hover:bg-gray-100 rounded-full">
                 <ChevronLeft size={18} />
               </button>
@@ -756,7 +762,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
 
         {/* VIEW 3: COURSE DETAIL VIEW */}
         {selectedCourse && !selectedLesson && !activeQuiz && (
-          <div id="course-detail-view" className={`p-4 space-y-4 ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
+          <div id="course-detail-view" className="p-4 space-y-4">
             <button 
               onClick={handleBackToCourseList}
               className="inline-flex items-center text-xs font-bold text-gray-500 hover:text-gray-800 transition"
