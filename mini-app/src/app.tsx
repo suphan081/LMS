@@ -113,39 +113,6 @@ function App() {
         }
       `}</style>
       
-      {/* Dynamic Tenant Switcher Header */}
-      <div className="bg-slate-900 px-4 py-2.5 flex items-center justify-between shrink-0 text-white shadow-md z-10 select-none">
-        <span className="text-[10px] font-extrabold tracking-wider uppercase opacity-80">Học viện:</span>
-        <div className="flex gap-2">
-          {ORGANIZATIONS.map(org => {
-            const isActive = org.id === activeOrg.id;
-            return (
-              <button
-                key={org.id}
-                onClick={() => {
-                  setActiveOrg(org);
-                  setUserProgress({
-                    courseId: '',
-                    completedLessonIds: [],
-                    quizScores: {},
-                    quizAnswers: {}
-                  });
-                  setChatMessages([]);
-                }}
-                className={`px-3 py-1.5 rounded-full text-[10px] font-black transition flex items-center gap-1.5 cursor-pointer ${
-                  isActive 
-                    ? 'bg-blue-600 text-white shadow-sm' 
-                    : 'bg-slate-800 text-slate-300 hover:text-white'
-                }`}
-              >
-                <span>{org.logo}</span>
-                <span>{org.id === 'TOEIC_CENTER' ? 'TOEIC' : 'JLPT'}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
       <ZaloMiniApp
         organization={activeOrg}
         courses={activeCourses}
@@ -159,6 +126,19 @@ function App() {
         onZaloLogout={() => setZaloUser(null)}
         isZaloMode={true}
         onToggleZaloMode={() => {}}
+        onSelectOrganization={(orgId) => {
+          const org = ORGANIZATIONS.find(o => o.id === orgId);
+          if (org) {
+            setActiveOrg(org);
+            setUserProgress({
+              courseId: '',
+              completedLessonIds: [],
+              quizScores: {},
+              quizAnswers: {}
+            });
+            setChatMessages([]);
+          }
+        }}
       />
     </div>
   );

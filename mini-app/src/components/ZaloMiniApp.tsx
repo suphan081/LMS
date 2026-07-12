@@ -8,6 +8,7 @@ import {
 import { Course, Lesson, Quiz, QuizQuestion, ChatMessage, UserProgress } from '../types';
 import { mockSummary, mockExplain, mockWeakness, mockChatResponse, delay } from '../mockAI';
 import { ZaloUserProfile, ZaloService } from '../lib/zalo';
+import { ORGANIZATIONS } from '../mockData';
 
 interface ZaloMiniAppProps {
   organization: { id: string; name: string; logo: string; themeColor: string };
@@ -22,6 +23,7 @@ interface ZaloMiniAppProps {
   onZaloLogout: () => void;
   isZaloMode: boolean;
   onToggleZaloMode: (val: boolean) => void;
+  onSelectOrganization?: (orgId: string) => void;
 }
 
 export default function ZaloMiniApp({
@@ -36,7 +38,8 @@ export default function ZaloMiniApp({
   onZaloLogin,
   onZaloLogout,
   isZaloMode,
-  onToggleZaloMode
+  onToggleZaloMode,
+  onSelectOrganization
 }: ZaloMiniAppProps) {
 
   // Navigation states
@@ -407,6 +410,38 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
             >
               <X size={14} />
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* NEW: FIXED ACADEMY SWITCHER ROW */}
+      {!activeQuiz && !selectedLesson && !selectedCourse && (
+        <div className={`px-4 py-3 bg-white border-b border-gray-100 flex items-center justify-between shrink-0 z-10 select-none ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-800">HỌC VIỆN:</span>
+          <div className="flex gap-2">
+            {ORGANIZATIONS.map(org => {
+              const isActive = org.id === organization.id;
+              return (
+                <button
+                  key={org.id}
+                  onClick={() => {
+                    if (onSelectOrganization) {
+                      onSelectOrganization(org.id);
+                    }
+                  }}
+                  className={`px-3 py-1.5 rounded-full text-[10px] font-black tracking-wide transition flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                    isActive 
+                      ? org.themeColor === 'indigo'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-rose-600 text-white'
+                      : 'bg-slate-700 text-slate-100 hover:bg-slate-600 hover:text-white'
+                  }`}
+                >
+                  <span className="text-xs">{org.logo}</span>
+                  <span>{org.id === 'TOEIC_CENTER' ? 'TOEIC' : 'JLPT'}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
@@ -801,7 +836,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
 
         {/* TAB 1: HOME TAB */}
         {activeTab === 'home' && !selectedCourse && (
-          <div id="home-view" className={`p-4 space-y-4 ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
+          <div id="home-view" className="p-4 space-y-4">
             {isZaloBrowser && (
               <div className="bg-emerald-600 text-white rounded-2xl p-3.5 flex items-center gap-3 shadow-md animate-fade-in border border-emerald-500">
                 <span className="text-xl">📱</span>
@@ -937,7 +972,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
 
         {/* TAB 2: ALL COURSES LIST */}
         {activeTab === 'courses' && !selectedCourse && (
-          <div id="all-courses-view" className={`p-4 space-y-4 ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
+          <div id="all-courses-view" className="p-4 space-y-4">
             <h3 className="font-bold text-sm text-gray-800">Danh Sách Khóa Học ({courses.length})</h3>
             
             <div className="space-y-3">
@@ -981,7 +1016,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
         {activeTab === 'chat' && (
           <div id="ai-chat-view" className="flex-1 flex flex-col bg-white overflow-hidden h-full">
             {/* Header / Context indicator */}
-            <div className={`p-3 bg-slate-50 border-b border-gray-100 flex items-center justify-between shrink-0 ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
+            <div className="p-3 bg-slate-50 border-b border-gray-100 flex items-center justify-between shrink-0">
               <div className="flex items-center space-x-2">
                 <span className="p-1 bg-blue-100 text-blue-600 rounded-lg animate-pulse"><Sparkles size={14} /></span>
                 <div>
@@ -1116,7 +1151,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
 
         {/* TAB 4: STUDENT PROFILE / COGNITIVE ANALYSIS */}
         {activeTab === 'profile' && (
-          <div id="profile-view" className={`p-4 space-y-4 ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
+          <div id="profile-view" className="p-4 space-y-4">
             {/* Student ID Card */}
             <div className="bg-white border border-slate-200 rounded-3xl p-4 shadow-sm flex items-center justify-between">
               <div className="flex items-center space-x-3 overflow-hidden">
