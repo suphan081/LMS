@@ -73,20 +73,19 @@ function App() {
   };
 
   return (
-    <div className="w-full min-h-[100dvh] bg-slate-50 flex flex-col antialiased">
+    <div className="w-full h-[100dvh] min-h-[100dvh] max-h-[100dvh] bg-slate-50 flex flex-col antialiased overflow-hidden">
       <style>{`
         body, html {
           margin: 0 !important;
           padding: 0 !important;
           background-color: #f8fafc !important;
-          overflow-x: hidden !important;
+          overflow: hidden !important;
           height: 100% !important;
           width: 100% !important;
         }
         #zalo-app-container {
-          width: 100vw !important;
-          height: 100dvh !important;
-          min-height: 100dvh !important;
+          width: 100% !important;
+          height: 100% !important;
           border: none !important;
           border-radius: 0px !important;
           box-shadow: none !important;

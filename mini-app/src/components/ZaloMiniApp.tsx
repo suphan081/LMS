@@ -321,36 +321,10 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
   const themeTextClass = organization.themeColor === 'indigo' ? 'text-indigo-600' : 'text-rose-600';
   const themeBorderClass = organization.themeColor === 'indigo' ? 'border-indigo-600' : 'border-rose-600';
 
-  const wrapperClass = isZaloMode 
-    ? "relative flex flex-col w-full h-full min-h-[100dvh] bg-slate-50 overflow-hidden select-none"
-    : "relative flex flex-col w-[375px] h-[730px] bg-slate-50 rounded-[32px] overflow-hidden shadow-2xl border-8 border-gray-900 mx-auto select-none";
-
-  const [currentTime, setCurrentTime] = useState('');
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setCurrentTime(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 15000);
-    return () => clearInterval(interval);
-  }, []);
+  const wrapperClass = "relative flex flex-col w-full h-full min-h-0 bg-slate-50 overflow-hidden select-none";
 
   return (
     <div id="zalo-app-container" className={wrapperClass}>
-      
-      {/* simulated native mobile status bar when in Zalo Mode */}
-      {isZaloMode && (
-        <div className={`px-4 pt-1.5 pb-0.5 flex justify-between items-center text-[10px] select-none shrink-0 font-sans font-semibold tracking-wide ${themeBgColor} text-white/90 border-b border-white/5`}>
-          <span>{currentTime || '14:46'}</span>
-          <div className="flex items-center gap-1.5">
-            <span className="text-[9px]">5G</span>
-            <div className="w-5 h-2.5 border border-white/70 rounded-[4px] relative flex items-center p-[1px]">
-              <span className="h-full w-[85%] bg-white rounded-[2px] block"></span>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* 1. ZALO MINI APP HEADER */}
       <div className={`flex items-center justify-between px-4 h-12 ${themeBgColor} text-white font-medium shadow-sm shrink-0 z-20`}>
@@ -406,7 +380,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
       </div>
 
       {/* 2. MAIN SCROLLABLE APP CONTENT AREA */}
-      <div className={`flex-1 overflow-y-auto relative scrollbar-none flex flex-col ${isZaloMode ? 'pb-18' : 'pb-14'}`}>
+      <div className="flex-1 overflow-y-auto relative scrollbar-none flex flex-col pb-4">
         
         {/* VIEW 1: ACTIVE QUIZ SCREEN */}
         {activeQuiz && (
@@ -1274,7 +1248,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
       </div>
 
       {/* 3. FIXED BOTTOM TAB NAVIGATION */}
-      <div className={`absolute bottom-0 inset-x-0 bg-white border-t border-gray-100 flex items-center justify-around z-20 shrink-0 shadow-lg ${isZaloMode ? 'h-18 pb-4' : 'h-14'}`}>
+      <div className="bg-white border-t border-gray-100 flex items-center justify-around z-20 shrink-0 shadow-lg h-16">
         <button 
           onClick={() => {
             setActiveTab('home');
