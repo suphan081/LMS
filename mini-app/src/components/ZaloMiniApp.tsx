@@ -98,6 +98,34 @@ export default function ZaloMiniApp({
     setActiveTab('home');
   }, [organization.id]);
 
+  // Synchronize Zalo Native Navigation Bar Title
+  useEffect(() => {
+    let title = organization.name;
+    if (activeQuiz) {
+      title = "Kiểm Tra Nhanh AI";
+    } else if (selectedLesson) {
+      title = selectedLesson.title;
+    } else if (selectedCourse) {
+      title = selectedCourse.title;
+    } else {
+      switch (activeTab) {
+        case 'home':
+          title = organization.name;
+          break;
+        case 'courses':
+          title = "Khóa Học";
+          break;
+        case 'chat':
+          title = "Trợ Lý AI";
+          break;
+        case 'profile':
+          title = "Cá Nhân";
+          break;
+      }
+    }
+    ZaloService.setNavigationBarTitle(title);
+  }, [selectedCourse, selectedLesson, activeQuiz, activeTab, organization]);
+
   // Scroll to bottom of chat
   useEffect(() => {
     if (chatEndRef.current) {
@@ -321,70 +349,74 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
   const themeTextClass = organization.themeColor === 'indigo' ? 'text-indigo-600' : 'text-rose-600';
   const themeBorderClass = organization.themeColor === 'indigo' ? 'border-indigo-600' : 'border-rose-600';
 
+  const isInRealZalo = ZaloService.isRealZaloContainer() || isZaloBrowser;
+
   const wrapperClass = "relative flex flex-col w-full h-full min-h-0 bg-slate-50 overflow-hidden select-none";
 
   return (
     <div id="zalo-app-container" className={wrapperClass}>
 
       {/* 1. ZALO MINI APP HEADER */}
-      <div className={`flex items-center justify-between px-4 h-12 ${themeBgColor} text-white font-medium shadow-sm shrink-0 z-20`}>
-        <div className="flex items-center space-x-2">
-          {(selectedCourse || activeTab !== 'home') ? (
-            <button 
-              id="zalo-back-btn"
-              onClick={() => {
-                if (activeQuiz) {
-                  setActiveQuiz(null);
-                } else if (selectedLesson) {
-                  setSelectedLesson(null);
-                } else if (selectedCourse) {
-                  setSelectedCourse(null);
-                } else {
-                  setActiveTab('home');
-                }
-              }} 
-              className="p-1 hover:bg-black/15 rounded-full transition"
-            >
-              <ChevronLeft size={20} />
+      {!isInRealZalo && (
+        <div className={`flex items-center justify-between px-4 h-12 ${themeBgColor} text-white font-medium shadow-sm shrink-0 z-20`}>
+          <div className="flex items-center space-x-2">
+            {(selectedCourse || activeTab !== 'home') ? (
+              <button 
+                id="zalo-back-btn"
+                onClick={() => {
+                  if (activeQuiz) {
+                    setActiveQuiz(null);
+                  } else if (selectedLesson) {
+                    setSelectedLesson(null);
+                  } else if (selectedCourse) {
+                    setSelectedCourse(null);
+                  } else {
+                    setActiveTab('home');
+                  }
+                }} 
+                className="p-1 hover:bg-black/15 rounded-full transition"
+              >
+                <ChevronLeft size={20} />
+              </button>
+            ) : (
+              <span className="text-lg">{organization.logo}</span>
+            )}
+            <div className="leading-tight">
+              <h4 className="text-xs font-semibold tracking-wider opacity-80 uppercase">ZALO MINI APP</h4>
+              <h3 className="text-sm font-bold truncate max-w-[160px]">
+                {selectedCourse ? selectedCourse.title : organization.name}
+              </h3>
+            </div>
+          </div>
+
+          {/* Traditional Zalo Capsule Controls */}
+          <div className="flex items-center bg-black/20 border border-white/10 rounded-full py-1 px-3 space-x-3 text-xs">
+            <button onClick={() => {}} className="opacity-85 hover:opacity-100">
+              <span className="font-extrabold tracking-tight">•••</span>
             </button>
-          ) : (
-            <span className="text-lg">{organization.logo}</span>
-          )}
-          <div className="leading-tight">
-            <h4 className="text-xs font-semibold tracking-wider opacity-80 uppercase">ZALO MINI APP</h4>
-            <h3 className="text-sm font-bold truncate max-w-[160px]">
-              {selectedCourse ? selectedCourse.title : organization.name}
-            </h3>
+            <div className="w-[1px] h-3 bg-white/20"></div>
+            <button 
+              onClick={() => {
+                setSelectedCourse(null);
+                setSelectedLesson(null);
+                setActiveQuiz(null);
+                setAiSheetOpen(false);
+                setActiveTab('home');
+              }} 
+              className="opacity-85 hover:opacity-100"
+            >
+              <X size={14} />
+            </button>
           </div>
         </div>
-
-        {/* Traditional Zalo Capsule Controls */}
-        <div className="flex items-center bg-black/20 border border-white/10 rounded-full py-1 px-3 space-x-3 text-xs">
-          <button onClick={() => {}} className="opacity-85 hover:opacity-100">
-            <span className="font-extrabold tracking-tight">•••</span>
-          </button>
-          <div className="w-[1px] h-3 bg-white/20"></div>
-          <button 
-            onClick={() => {
-              setSelectedCourse(null);
-              setSelectedLesson(null);
-              setActiveQuiz(null);
-              setAiSheetOpen(false);
-              setActiveTab('home');
-            }} 
-            className="opacity-85 hover:opacity-100"
-          >
-            <X size={14} />
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* 2. MAIN SCROLLABLE APP CONTENT AREA */}
       <div className="flex-1 overflow-y-auto relative scrollbar-none flex flex-col pb-4">
         
         {/* VIEW 1: ACTIVE QUIZ SCREEN */}
         {activeQuiz && (
-          <div id="quiz-view" className="p-4 flex-1 flex flex-col bg-white">
+          <div id="quiz-view" className={`p-4 flex-1 flex flex-col bg-white ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
             <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
               <div>
                 <h3 className="font-bold text-gray-800 text-sm">Kiểm Tra Nhanh AI</h3>
@@ -565,7 +597,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
         {selectedLesson && !activeQuiz && (
           <div id="lesson-view" className="flex-1 flex flex-col bg-white">
             {/* Header */}
-            <div className="p-3 border-b border-gray-100 flex items-center space-x-2 shrink-0">
+            <div className={`p-3 border-b border-gray-100 flex items-center space-x-2 shrink-0 ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
               <button onClick={handleBackToCourseDetail} className="p-1 text-gray-500 hover:bg-gray-100 rounded-full">
                 <ChevronLeft size={18} />
               </button>
@@ -689,7 +721,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
 
         {/* VIEW 3: COURSE DETAIL VIEW */}
         {selectedCourse && !selectedLesson && !activeQuiz && (
-          <div id="course-detail-view" className="p-4 space-y-4">
+          <div id="course-detail-view" className={`p-4 space-y-4 ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
             <button 
               onClick={handleBackToCourseList}
               className="inline-flex items-center text-xs font-bold text-gray-500 hover:text-gray-800 transition"
@@ -769,7 +801,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
 
         {/* TAB 1: HOME TAB */}
         {activeTab === 'home' && !selectedCourse && (
-          <div id="home-view" className="p-4 space-y-4">
+          <div id="home-view" className={`p-4 space-y-4 ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
             {isZaloBrowser && (
               <div className="bg-emerald-600 text-white rounded-2xl p-3.5 flex items-center gap-3 shadow-md animate-fade-in border border-emerald-500">
                 <span className="text-xl">📱</span>
@@ -905,7 +937,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
 
         {/* TAB 2: ALL COURSES LIST */}
         {activeTab === 'courses' && !selectedCourse && (
-          <div id="all-courses-view" className="p-4 space-y-4">
+          <div id="all-courses-view" className={`p-4 space-y-4 ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
             <h3 className="font-bold text-sm text-gray-800">Danh Sách Khóa Học ({courses.length})</h3>
             
             <div className="space-y-3">
@@ -949,7 +981,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
         {activeTab === 'chat' && (
           <div id="ai-chat-view" className="flex-1 flex flex-col bg-white overflow-hidden h-full">
             {/* Header / Context indicator */}
-            <div className="p-3 bg-slate-50 border-b border-gray-100 flex items-center justify-between shrink-0">
+            <div className={`p-3 bg-slate-50 border-b border-gray-100 flex items-center justify-between shrink-0 ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
               <div className="flex items-center space-x-2">
                 <span className="p-1 bg-blue-100 text-blue-600 rounded-lg animate-pulse"><Sparkles size={14} /></span>
                 <div>
@@ -1084,7 +1116,7 @@ AI không tìm thấy tài liệu ngân hàng câu hỏi phù hợp cho bài h�
 
         {/* TAB 4: STUDENT PROFILE / COGNITIVE ANALYSIS */}
         {activeTab === 'profile' && (
-          <div id="profile-view" className="p-4 space-y-4">
+          <div id="profile-view" className={`p-4 space-y-4 ${isInRealZalo ? 'pt-6 pt-safe' : ''}`}>
             {/* Student ID Card */}
             <div className="bg-white border border-slate-200 rounded-3xl p-4 shadow-sm flex items-center justify-between">
               <div className="flex items-center space-x-3 overflow-hidden">
